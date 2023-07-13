@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"net/http"
 	"text/template"
 
@@ -15,6 +16,15 @@ type Produto struct {
 }
 
 var temp = template.Must(template.ParseGlob("templates/*.html"))
+
+func DataBaseConect() *sql.DB {
+	conexao := "username=vinicius dbname=alura_loja password=senior host=localhost sslmode=disable"
+	db, err := sql.Open("postgres", conexao)
+	if err != nil {
+		panic(err.Error())
+	}
+	return db
+}
 
 func main() {
 	http.HandleFunc("/", index)
