@@ -1,4 +1,4 @@
-module web-application-go
+module golang-web-application
 
 go 1.20
 
