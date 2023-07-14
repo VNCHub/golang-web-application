@@ -2,7 +2,7 @@ package models
 
 import "golang-web-application/db"
 
-type Products struct {
+type Product struct {
 	Id         int
 	Nome       string
 	Descricao  string
@@ -10,15 +10,15 @@ type Products struct {
 	Quantidade int
 }
 
-func SearchProducs() []Products {
+func SearchProducs() []Product {
 	db := db.DataBaseConect()
 	selection, err := db.Query("SELECT * FROM Produtos")
 	if err != nil {
 		panic(err.Error())
 	}
 
-	p := Products{}
-	products := []Products{}
+	p := Product{}
+	products := []Product{}
 
 	for selection.Next() {
 		err := selection.Scan(
@@ -34,4 +34,28 @@ func SearchProducs() []Products {
 		products = append(products, p)
 	}
 	return products
+}
+
+func NewProduct(nome string, descricao string, preco float64, quantidade int) {
+
+	db := db.DataBaseConect()
+	selection, err := db.Prepare(
+		"INSERT INTO Produtos (nome, descricao, preco, quantidade) VALUES ($1, $2, $3, $4)",
+	)
+	if err != nil {
+		panic(err.Error())
+	}
+	selection.Exec(nome, descricao, preco, quantidade)
+}
+
+func DeleteProduct(productId int) {
+	db := db.DataBaseConect()
+	selection, err := db.Prepare(
+		"DELETE FROM Produtos WHERE Id = $1",
+	)
+	if err != nil {
+		panic(err.Error())
+	}
+	selection.Exec(productId)
+	defer db.Close()
 }
