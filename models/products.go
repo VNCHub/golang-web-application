@@ -1,6 +1,8 @@
 package models
 
-import "golang-web-application/db"
+import (
+	"golang-web-application/db"
+)
 
 type Product struct {
 	Id         int
@@ -80,4 +82,14 @@ func EditProduct(ID string) Product {
 
 	defer db.Close()
 	return p
+}
+
+func UpdateProduct(p Product) {
+	db := db.DataBaseConect()
+	selection, err := db.Prepare("UPDATE Produtos SET nome=$1, descricao=$2, preco=$3, quantidade=$4 WHERE id=$5")
+	if err != nil {
+		panic(err.Error)
+	}
+	selection.Exec(p.Nome, p.Descricao, p.Preco, p.Quantidade, p.Id)
+	defer db.Close()
 }
